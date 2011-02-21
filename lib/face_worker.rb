@@ -4,7 +4,7 @@ require 'open-uri'
 require 'rest-client'
 class FaceWorker < SimpleWorker::Base
   merge_worker File.join(File.dirname(__FILE__), "email_worker.rb"), "EmailWorker"
-  attr_accessor :images_list, :api_key, :api_secret, :email_username, :email_password, :email_domain, :send_to, :title
+  attr_accessor :images_list, :face_api_key, :face_api_secret, :email_username, :email_password, :email_domain, :send_to, :title
 
   def run()
     msg            = "Recognition report\n"
@@ -14,7 +14,7 @@ class FaceWorker < SimpleWorker::Base
     stats["female"]=0
     images_list.each_index do |image_index|
       begin
-        response = RestClient.get 'http://api.face.com/faces/detect.format', {:params => {:api_key => api_key, :api_secret => api_secret, :urls=>images_list[image_index]}}
+        response = RestClient.get 'http://api.face.com/faces/detect.format', {:params => {:api_key => face_api_key, :api_secret => face_api_secret, :urls=>images_list[image_index]}}
         parsed   = JSON.parse(response)
         tags     = parsed["photos"][0]["tags"]
         tags.each do |tag|
@@ -39,7 +39,7 @@ EOF
     email.email_domain = email_domain
     email.username     = email_username
     email.password     = email_password
-    email.from         = 'system@simpleworker.com'
+    email.from         = 'system@appoxy.com'
     email.to           = to
     email.subject      = "[Face] #{subject}"
     email.body         = body

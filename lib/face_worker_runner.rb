@@ -32,11 +32,11 @@ load "face_worker.rb"
 tw_username       = "Twilight"
 fw                = FaceWorker.new
 fw.images_list    = get_images_twitpic(tw_username)
-fw.api_key        = SETTINGS["api_key"]
-fw.api_secret     = SETTINGS["api_secret"]
+fw.face_api_key        = SETTINGS["face_api_key"]
+fw.face_api_secret     = SETTINGS["face_api_secret"]
 fw.email_username = SETTINGS["email_username"]
 fw.email_password = SETTINGS["email_password"]
 fw.email_domain   = SETTINGS["email_domain"]
-fw.send_to        = "user@email.com"
+fw.send_to        = "user@gmail.com"
 fw.title          = "Twitpic account #{tw_username}"
 fw.queue

@@ -3,9 +3,9 @@ require 'json'
 require 'open-uri'
 require 'rest-client'
 require 'rss'
-class SpyWorker < SimpleWorker::Base
+class SpotWorker < SimpleWorker::Base
   merge_worker File.join(File.dirname(__FILE__), "email_worker.rb"), "EmailWorker"
-  attr_accessor :rss_feed, :api_key, :api_secret, :email_username, :email_password, :email_domain, :send_to, :title, :last_date
+  attr_accessor :rss_feed, :face_api_key, :face_api_secret, :email_username, :email_password, :email_domain, :send_to, :title, :last_date
 
   def get_new_images()
     images_list = []
@@ -27,7 +27,7 @@ class SpyWorker < SimpleWorker::Base
     log "IMAGES LIST#{images_list.count.to_s}"
     images_list.each_index do |image_index|
       begin
-        response = RestClient.get 'http://api.face.com/faces/detect.format', {:params => {:api_key => api_key, :api_secret => api_secret, :urls=>images_list[image_index]}}
+        response = RestClient.get 'http://api.face.com/faces/detect.format', {:params => {:api_key => face_api_key, :api_secret => face_api_secret, :urls=>images_list[image_index]}}
         parsed   = JSON.parse(response)
         tags     = parsed["photos"][0]["tags"]
         if tags.size >0
@@ -51,7 +51,7 @@ class SpyWorker < SimpleWorker::Base
     email.email_domain = email_domain
     email.username     = email_username
     email.password     = email_password
-    email.from         = 'system@simpledeployer.com'
+    email.from         = 'system@appoxy.com'
     email.to           = to
     email.subject      = "[Face] #{subject}"
     email.body         = body

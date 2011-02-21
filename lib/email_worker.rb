@@ -8,8 +8,8 @@ class EmailWorker < SimpleWorker::Base
         :subject, :body
 
   def run
+    @@text = body
     init_mail
-
     send_mail
   end
 
@@ -35,7 +35,7 @@ class EmailWorker < SimpleWorker::Base
      mail[:subject] = subject
      html_part      = Mail::Part.new do
        content_type 'text/html; charset=UTF-8'
-       body(body)
+       body(@@text)
      end
      mail.html_part = html_part
      mail.deliver!
